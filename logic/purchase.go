@@ -1,8 +1,8 @@
 package logic
 
 import (
-	"demo/abix"
 	"demo/conf"
+	"demo/conf/abix"
 	"demo/model"
 	"fmt"
 	"github.com/beego/beego/v2/core/logs"
@@ -10,10 +10,8 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/ethereum/go-ethereum/ethclient"
-	"gorm.io/gorm"
 	"log"
 	"math/big"
-	"strings"
 	"time"
 )
 
@@ -21,7 +19,7 @@ var (
 	MirrorExchangeAddress = "0x50047A8658baBADA196C395589A8Fc03178fD282"
 )
 // Purchase  购买
-func Purchase(formAddress, toAddress, tokenId, purchaseHash string, pledgeStr float64) error {
+func (PurchaseCommodity PurchaseCommodity)Purchase() error {
 	//查询商品在售信息
 
 	time := time.Now()
@@ -133,6 +131,14 @@ func Purchase(formAddress, toAddress, tokenId, purchaseHash string, pledgeStr fl
 		logs.Error("更改售卖者金额记录失败，err:%s", err2)
 	}
 	return nil
+}
+
+// PurchaseCommodity 购买商品
+type PurchaseCommodity struct {
+	toAddress string  `json:"to_address"` // to地址信息
+	TokenID      string  `json:"token_id"`   // 唯一链上ID
+	hash   string  `json:"hash"` // 购买hash
+	Price        float64 `json:"price"`      // 价格
 }
 
 

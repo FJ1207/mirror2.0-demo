@@ -2,8 +2,8 @@ package handles
 
 import (
 	"context"
-	"demo/abix"
 	"demo/conf"
+	"demo/conf/abix"
 	"demo/model"
 	"demo/tools"
 	"fmt"
@@ -23,7 +23,7 @@ var (
 	URL           = "https://exchaintestrpc.okex.org"
 	ChainId       = big.NewInt(65)
 	ERC721address = "0x3C8C4bCEc2aA5Bbd9E2A29c014849F489370cA36"
-	privateKey    = "00b4a47061a3a6c48885208bf1dd95a5fbf588e7d2bd3b35e82d1f60007dfd2c"
+	PrivateKey    = "00b4a47061a3a6c48885208bf1dd95a5fbf588e7d2bd3b35e82d1f60007dfd2c"
 	countAddress  = "0x789253a85b81E246633CAd62Ae3ddBA4cABa1675"
 )
 
@@ -54,7 +54,7 @@ func CreateMold(ctx *gin.Context) {
 	}
 
 	// 创建一个对象，用于发送交易
-	privateKeyECDSA, err := crypto.HexToECDSA(privateKey)
+	privateKeyECDSA, err := crypto.HexToECDSA(PrivateKey)
 	if err != nil {
 		log.Fatal(err)
 	}

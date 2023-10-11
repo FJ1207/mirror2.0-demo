@@ -7,6 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// SellWorks 售卖商品
 func SellWorks(ctx *gin.Context) {
 	// 接收参数
 	var ReceiveCommodity logic.ReceiveCommodity

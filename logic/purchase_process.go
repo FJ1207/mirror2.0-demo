@@ -28,7 +28,7 @@ func UpdateWorkTypes(work, types, form string, price float64, belong int) error 
 	logs.Info("更新作品状态信息")
 	time := time.Now()
 	// 更新作品状态信息
-	if err := conf.DB1.Model(model.WorkTypes{}).
+	if err := conf.DB1.Model(model.WorkTypesDemo{}).
 		Where("token_id = ?", work).
 		Where("belong = ?", belong).
 		Updates(map[string]interface{}{"types": types, "price": price, "time": time, "form": form}).
