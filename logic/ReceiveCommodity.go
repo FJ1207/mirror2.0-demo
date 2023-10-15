@@ -5,22 +5,13 @@ import (
 	"demo/model"
 	"fmt"
 	"github.com/beego/beego/v2/core/logs"
-	"math/big"
 	"strings"
 	"time"
 )
 
-var (
-	URL           = "https://exchaintestrpc.okex.org"
-	ChainId       = big.NewInt(65)
-	ERC721address = "0x3C8C4bCEc2aA5Bbd9E2A29c014849F489370cA36"
-	PrivateKey    = "00b4a47061a3a6c48885208bf1dd95a5fbf588e7d2bd3b35e82d1f60007dfd2c"
-	countAddress  = "0x789253a85b81E246633CAd62Ae3ddBA4cABa1675"
-)
-
 // 商品上架不需要调合约
-func (commodity ReceiveCommodity) SellWorks() error {
-	var work model.Work
+func (commodity *ReceiveCommodity) SellWorks() error {
+	var work model.WorkDemo
 	if err := conf.DB1.Model(model.WorkDemo{}).Where("token_id = ?", commodity.TokenID).Find(&work).Error; err != nil {
 		logs.Error("查询作品信息失败，err:%s", err)
 		return err
@@ -43,12 +34,12 @@ func (commodity ReceiveCommodity) SellWorks() error {
 		return fmt.Errorf("上架时间错误，请联系相关人员询问，或稍后再试")
 	}
 
-	if err := conf.DB1.Model(model.Commodities{}).
-		Where(map[string]interface{}{"owner": work.Owner, "conditions": 0}).
-		Update("price", commodity.Price).Error; err != nil {
-		logs.Error("查询作品信息失败，err:%s", err)
-		return err
-	}
+	//if err := conf.DB1.Model(model.Commodities{}).
+	//	Where(map[string]interface{}{"owner": work.Owner, "conditions": 0}).
+	//	Update("price", commodity.Price).Error; err != nil {
+	//	logs.Error("查询作品信息失败，err:%s", err)
+	//	return err
+	//}
 
 	// 判断是否有进行下架
 	if commodities > 0 {
@@ -58,7 +49,7 @@ func (commodity ReceiveCommodity) SellWorks() error {
 			Where("conditions = ?", 2).
 			Updates(map[string]interface{}{"sale_time": seleTime, "start_time": startTime, "price": commodity.Price, "conditions": 0}).
 			Error; err != nil {
-			logs.Error("查询作品信息失败，err:%s", err)
+			logs.Error("商品重新上架失败，err:%s", err)
 			return err
 		}
 	} else {
@@ -69,14 +60,17 @@ func (commodity ReceiveCommodity) SellWorks() error {
 				return fmt.Errorf("实体作品只能售卖一次")
 			}
 		}
-
+		user, err := model.FindUser(work.Owner)
+		if err != nil {
+			return err
+		}
 		// 没有下架，也不是售卖一次的实体作品，创建商品信息
 		createCommodity := model.CommoditiesDemo{
-			Trader:     commodity.Trader,
+			Trader:     user.UserAddress,
 			TokenID:    work.TokenID,
 			Collection: work.Collection,
 			Price:      commodity.Price,
-			Conditions: commodity.Condition,
+			Conditions: 0,
 			StartTime:  startTime,
 			SaleTime:   seleTime,
 			Creator:    work.Creator,
@@ -92,23 +86,23 @@ func (commodity ReceiveCommodity) SellWorks() error {
 	}
 	//// 创建交易记录
 	//CreateTransactionRecord(work.Owner, commodity.FormWorkHash, work.TokenID)
-	// 修改作品状态
-	if strings.EqualFold(work.Creator, work.Owner) {
-		UpdateWorkTypes(commodity.TokenID, "售卖中", "我", commodity.Price, 0)
-	} else {
-		UpdateWorkTypes(commodity.TokenID, "售卖中", "我", commodity.Price, 1)
-	}
+	//// 修改作品状态
+	//if strings.EqualFold(work.Creator, work.Owner) {
+	//	UpdateWorkTypes(commodity.TokenID, "售卖中", "我", commodity.Price, 0)
+	//} else {
+	//	UpdateWorkTypes(commodity.TokenID, "售卖中", "我", commodity.Price, 1)
+	//}
 	return nil
 }
 
 // ReceiveCommodity 商品信息接收结构体
 type ReceiveCommodity struct {
-	Trader       string  `json:"trader"`     //创建订单者地址
-	TokenID      string  `json:"token_id"`   // 唯一链上ID
-	Collection   string  `json:"collection"` // 作品合约地址
-	Price        float64 `json:"price"`      // 价格
-	Condition    int     `json:"condition"`  // 售卖状态 0-待出售，1-已出售，2-已下架
-	SaleTime     string  `json:"sale_time"`  // 结束售卖时间
-	StartTime    string  `json:"start_time"` // 开始售卖时间
-	FormWorkHash string  `json:"hash"`       // 售卖hash
+	//Trader       string  `json:"trader"`     //创建订单者地址
+	TokenID string `json:"token_id"` // 唯一链上ID
+	//Collection   string  `json:"collection"` // 作品合约地址
+	Price int64 `json:"price"` // 价格，单位wei
+	//Condition    int     `json:"condition"`  // 售卖状态 0-待出售，1-已出售，2-已下架
+	SaleTime  string `json:"sale_time"`  // 结束售卖时间
+	StartTime string `json:"start_time"` // 开始售卖时间
+	//FormWorkHash string  `json:"hash"`       // 售卖hash
 }

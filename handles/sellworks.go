@@ -10,7 +10,7 @@ import (
 // SellWorks 售卖商品
 func SellWorks(ctx *gin.Context) {
 	// 接收参数
-	var ReceiveCommodity logic.ReceiveCommodity
+	var ReceiveCommodity *logic.ReceiveCommodity
 	err := ctx.ShouldBindJSON(&ReceiveCommodity)
 	logs.Info("售卖信息%v", ReceiveCommodity)
 	if err != nil {

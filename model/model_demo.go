@@ -5,6 +5,15 @@ import (
 	"time"
 )
 
+// 用户表
+type UserDemo struct {
+	gorm.Model
+	Name           string `grom:"name"`             // 用户名称
+	UserAddress    string `gorm:"user_address"`     // 用户地址
+	UserPrivateKey string `grom:"user_private_key"` //用户私钥
+	Amount         int64  `grom:"amount"`           // 金额
+}
+
 // nft表
 type WorkDemo struct {
 	gorm.Model
@@ -17,8 +26,6 @@ type WorkDemo struct {
 	Real         int    `gorm:"real"`                // 是否存在实物，2-不存在，1-存在
 	AssetType    int    `gorm:"asset_type"`          // 资产类型(0-ERC721,1-ERC1155)
 	Collection   string `gorm:"collection"`          // 作品合约地址
-	Amount       int    `gorm:"amount"`              // NFT的数量
-	Mold         int    `gorm:"mold"`                // 是否铸造，0-未铸造，1-已铸造
 }
 
 // 商品表--可以转化为卖单
@@ -29,7 +36,7 @@ type CommoditiesDemo struct {
 	Trader     string    `grom:"trader"`              // 订单创建者的地址
 	TokenID    string    `gorm:"token_id;primaryKey"` // 唯一链上ID
 	Collection string    `gorm:"collection"`          // 作品合约地址
-	Price      float64   `gorm:"price"`               // 价格
+	Price      int64     `gorm:"price"`               // 价格
 	Conditions int       `gorm:"conditions"`          // 售卖状态 0-待出售，1-已出售，2-已下架,3-正在购买
 	StartTime  time.Time `gorm:"start_time"`          // 开始售卖时间
 	SaleTime   time.Time `gorm:"sale_time"`           // 结束售卖时间

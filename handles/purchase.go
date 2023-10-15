@@ -16,7 +16,7 @@ import (
 // @return /super/nft/worm/purchase [POST]
 func Purchase(ctx *gin.Context) {
 	// 形成买单
-	var PurchaseCommodity logic.PurchaseCommodity
+	var PurchaseCommodity *logic.PurchaseCommodity
 	err := ctx.ShouldBindJSON(&PurchaseCommodity)
 	logs.Info("购买商品 : %v", PurchaseCommodity)
 	if err != nil {
