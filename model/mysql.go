@@ -11,9 +11,10 @@ func FindUser(name string) (*UserDemo, error) {
 	logs.Info("查找用户信息")
 	var user UserDemo
 	if err := conf.DB1.Model(UserDemo{}).Where("name = ?", name).Find(&user).Error; err != nil {
-		logs.Error("保存铸造信息错误，err:%s", err)
+		logs.Error("查找用户信息错误，err:%s", err)
 		return nil, err
 	}
+	logs.Info("查找用户信息成功")
 	return &user, nil
 }
 

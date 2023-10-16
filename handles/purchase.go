@@ -3,8 +3,10 @@ package handles
 import (
 	"demo/logic"
 	"demo/tools"
+	"fmt"
 	"github.com/beego/beego/v2/core/logs"
 	"github.com/gin-gonic/gin"
+	"runtime"
 )
 
 // Purchase 购买商品
@@ -15,6 +17,24 @@ import (
 // @param  pledge          string   金额
 // @return /super/nft/worm/purchase [POST]
 func Purchase(ctx *gin.Context) {
+	defer func() {
+		if r := recover(); r != nil {
+			// Print the stack trace
+			var stacktrace string
+			for i := 0; ; i++ {
+				pc, file, line, ok := runtime.Caller(i)
+				if !ok {
+					break
+				}
+				stacktrace += fmt.Sprintf("%s:%d\n", file, line)
+				fn := runtime.FuncForPC(pc)
+				if fn != nil {
+					stacktrace += fmt.Sprintf("  %s\n", fn.Name())
+				}
+			}
+			logs.Info(fmt.Sprintf("panic error: %v\n%s", r, stacktrace))
+		}
+	}()
 	// 形成买单
 	var PurchaseCommodity *logic.PurchaseCommodity
 	err := ctx.ShouldBindJSON(&PurchaseCommodity)

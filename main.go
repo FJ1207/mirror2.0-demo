@@ -29,7 +29,7 @@ func Init() {
 }
 
 func main() {
-
+	Init()
 	// 创建一个无中间件的路由
 	r := gin.New()
 	// 判断是否启用日志

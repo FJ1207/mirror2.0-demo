@@ -1,14 +1,14 @@
 package tools
 
 import (
-	"demo/logic"
+	"demo/conf/abix"
 	"encoding/json"
 	"github.com/ethereum/go-ethereum/crypto"
 	"log"
 )
 
 // 订单签名
-func Sign(order logic.Order) (uint8, string, string, error) {
+func Sign(order abix.Order) (uint8, string, string, error) {
 	//// 设置 EIP-712 域信息
 	//domain := apitypes.TypedDataDomain{
 	//	Name:              "Mirror Exchange",                            // 合约名称，填"Mirror Exchange"
@@ -16,7 +16,7 @@ func Sign(order logic.Order) (uint8, string, string, error) {
 	//	ChainId:           math.NewHexOrDecimal256(65),                  // 合约所在链的chainID
 	//	VerifyingContract: "0x50047A8658baBADA196C395589A8Fc03178fD282", // 已经部署好的合约地址
 	//}
-	privateKey, err := crypto.HexToECDSA(logic.PrivateKey)
+	privateKey, err := crypto.HexToECDSA("")
 	if err != nil {
 		return 0, "", "", err
 		log.Fatal(err)

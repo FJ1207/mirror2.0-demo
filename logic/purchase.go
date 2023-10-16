@@ -4,6 +4,7 @@ import (
 	"demo/conf"
 	"demo/conf/abix"
 	"demo/model"
+	"demo/tools"
 	"fmt"
 	"github.com/beego/beego/v2/core/logs"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
@@ -76,6 +77,7 @@ func (PurchaseCommodity *PurchaseCommodity) Purchase() error {
 		Fees:           fee,
 		Salt:           big.NewInt(saltsell),
 	}
+	logs.Info("Sell 结构体 ：", Sellorder)
 
 	signature8 := "0x091e27ae0e9957c0dab85fbee814699beb15b2316e0b65f3c149f7d74e2426031da34df2970d57e0944c7805af75d9f2ad3994865093db81d1670af873ff49bc1c"
 
@@ -116,7 +118,9 @@ func (PurchaseCommodity *PurchaseCommodity) Purchase() error {
 	signature6 := "0x397dd5b5c3c4192f799386ea0851b498d49fb5f2db7ea8d5d0bd4b27b7c28d79319d635176a3b12322041ff526eecfdb7eec99971463d96d8bcc24b373f7cf591b"
 
 	sigHex6, err := hexutil.Decode(signature6)
-
+	if err != nil {
+		return err
+	}
 	// 将查询到的商品信息形成订单
 	SignedPurchaseOrder := abix.SignedOrder{
 		Order: PurchaseOrder,
@@ -136,16 +140,19 @@ func (PurchaseCommodity *PurchaseCommodity) Purchase() error {
 	// 合约和链远程客户端绑定绑定
 	contract, err := abix.NewMirrorExchange(contractAddress, ethClient)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("111")
+		return err
 	}
 	// 吃单者调合约
-	privateKeyECDSA, err := crypto.HexToECDSA(user.UserPrivateKey)
+	privateKeyECDSA, err := crypto.HexToECDSA(tools.HasPrifix(user.UserPrivateKey))
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("222")
+		return err
 	}
 	TransactOpts, err := bind.NewKeyedTransactorWithChainID(privateKeyECDSA, ChainId)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("333")
+		return err
 	}
 	TransactOpts.GasLimit = uint64(867160 * 2)
 	TransactOpts.GasPrice = big.NewInt(65)

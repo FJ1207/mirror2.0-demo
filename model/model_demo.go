@@ -8,10 +8,17 @@ import (
 // 用户表
 type UserDemo struct {
 	gorm.Model
-	Name           string `grom:"name"`             // 用户名称
+	Name           string `grom:"name;primaryKey"`  // 用户名称
 	UserAddress    string `gorm:"user_address"`     // 用户地址
 	UserPrivateKey string `grom:"user_private_key"` //用户私钥
 	Amount         int64  `grom:"amount"`           // 金额
+	CreatedAt      time.Time
+	UpdatedAt      time.Time
+	DeletedAt      time.Time `gorm:"default:null"`
+}
+
+func (t UserDemo) TableName() string {
+	return "user_demo"
 }
 
 // nft表
@@ -26,6 +33,9 @@ type WorkDemo struct {
 	Real         int    `gorm:"real"`                // 是否存在实物，2-不存在，1-存在
 	AssetType    int    `gorm:"asset_type"`          // 资产类型(0-ERC721,1-ERC1155)
 	Collection   string `gorm:"collection"`          // 作品合约地址
+	CreatedAt    time.Time
+	UpdatedAt    time.Time
+	DeletedAt    time.Time `gorm:"default:null"`
 }
 
 // 商品表--可以转化为卖单
@@ -41,8 +51,11 @@ type CommoditiesDemo struct {
 	StartTime  time.Time `gorm:"start_time"`          // 开始售卖时间
 	SaleTime   time.Time `gorm:"sale_time"`           // 结束售卖时间
 	//Salt       string    `gorm:"salt"`                //随机盐
-	Creator string `gorm:"creator"` // 创作者
-	Owner   string `gorm:"owner"`   // 所有者
+	Creator   string `gorm:"creator"` // 创作者
+	Owner     string `gorm:"owner"`   // 所有者
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	DeletedAt time.Time `gorm:"default:null"`
 }
 
 // 作品状态表*

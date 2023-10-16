@@ -17,7 +17,7 @@ func InitRouter(router *gin.Engine) {
 	nft := router.Group("/nft")
 	work := nft.Group("/worm")
 	{
-		work.POST("mold", CreateMold)       // 铸造
+		work.POST("/mold", CreateMold)      // 铸造
 		work.POST("/sell/works", SellWorks) // 售卖商品
 		work.POST("/purchase", Purchase)    // 购买商品
 	}

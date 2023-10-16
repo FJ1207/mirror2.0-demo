@@ -17,6 +17,7 @@ import (
 	"os"
 	"path"
 	"path/filepath"
+	"strings"
 
 	"github.com/beego/beego/v2/core/logs"
 	"github.com/gin-gonic/gin"
@@ -222,4 +223,15 @@ func ZipDeCompress(zipFile string, dstPath string) error {
 	}
 	// 全部解压完毕
 	return nil
+}
+
+func HasPrifix(tx string) string {
+	var txSrt string
+	txIndex := strings.HasPrefix(tx, "0x")
+	if txIndex {
+		txSrt = tx[2:]
+	} else {
+		txSrt = tx
+	}
+	return txSrt
 }
